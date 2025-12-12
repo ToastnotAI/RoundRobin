@@ -42,3 +42,17 @@ class TestProcess(unittest.TestCase):
         self.assertEqual(process.processName, name)
         self.assertEqual(process.processTime, time)
     
+    def test_get_process_repr(self):
+        name = "TestProcess"
+        time = 10
+        process = Process(name, time)
+        expectedRepr = f"Process(name={name}, time={time})"
+        self.assertEqual(repr(process), expectedRepr)
+    
+    def test_get_process_str(self):
+        name = "TestProcess"
+        time = 10
+        process = Process(name, time)
+        processStr = str(process)
+        self.assertIn(name, processStr)
+        self.assertIn(str(time), processStr)

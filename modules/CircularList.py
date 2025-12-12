@@ -50,8 +50,14 @@ class CircularList:
                 return currentNode
 
             currentNode = currentNode.next
-            
+
         return None
+
+    def __iter__(self):
+        currentNode = self.head
+        for _ in range(self.size):
+            yield currentNode
+            currentNode = currentNode.next
 
 
         

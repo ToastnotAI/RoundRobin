@@ -212,4 +212,51 @@ class TestScheduler(unittest.TestCase):
         self.assertEqual(scheduler.processList.head.data, process1)
         self.assertEqual(scheduler.currentNode.data, process1)
     
-    
+    def test_kill_process_empty_list(self):
+        scheduler = Scheduler()
+        self.assertIsNone(scheduler.currentNode)
+
+        try:
+            killSuccess = scheduler.kill("AnyProcess")  # Should not raise an error
+            self.assertFalse(killSuccess)
+        except Exception as e:
+            self.fail(f"Scheduler.kill() raised an exception on empty list: {e}")
+
+        self.assertIsNone(scheduler.currentNode)
+        self.assertEqual(scheduler.processList.size, 0)
+
+    def test_retrieve_current_process(self):
+        scheduler = Scheduler()
+        process1 = Process("Process1", 10)
+        scheduler.add_process(process1)
+        self.assertEqual(scheduler.get_current(), process1)
+        
+    def test_iterate_through_processes(self):
+        scheduler = Scheduler()
+        process1 = Process("Process1", 10)
+        process2 = Process("Process2", 20)
+        process3 = Process("Process3", 30)
+
+        scheduler.add_process(process1)
+        scheduler.add_process(process2)
+        scheduler.add_process(process3)
+
+        processesInOrder = [process1, process2, process3]
+        for yieldedProcess in scheduler:
+            expectedProcess = processesInOrder.pop(0)
+            self.assertEqual(yieldedProcess, expectedProcess)
+
+    def test_str_output_of_scheduler(self):
+        scheduler = Scheduler()
+        process1 = Process("Process1", 10)
+        process2 = Process("Process2", 20)
+
+        scheduler.add_process(process1)
+        scheduler.add_process(process2)
+
+        schedulerStr = str(scheduler)
+        self.assertIn("Process1", schedulerStr)
+        self.assertIn("Process2", schedulerStr)
+        self.assertIn("10", schedulerStr)
+        self.assertIn("20", schedulerStr)
+

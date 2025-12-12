@@ -181,6 +181,19 @@ class TestCircularList(unittest.TestCase):
         found_node = cList.find("absent")
         self.assertIsNone(found_node)
 
+    def test_iterate_through_list(self):
+        cList = CircularList()
+        nodes_data = ["first", "second", "third", "fourth"]
+        nodes = [Node(data) for data in nodes_data]
+        for node in nodes:
+            cList.add(node)
+        
+        for yieldedNode in cList:
+            expected = nodes.pop(0)
+            self.assertEqual(yieldedNode, expected)
+        
+        
+
     
 
         

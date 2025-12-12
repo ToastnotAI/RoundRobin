@@ -10,4 +10,10 @@ class Process:
         
         self.processName = name
         self.processTime = time
+
+    def __repr__(self):
+        return f"Process(name={self.processName}, time={self.processTime})"
+
+    def __str__(self):
+        return f"Process {self.processName} with {self.processTime} time units remaining"
         

@@ -56,6 +56,21 @@ class Scheduler:
         self.processList.delete(processToKillNode)
         return True
 
+    def get_current(self):
+        if self.currentNode is None:
+            return None
+        return self.currentNode.data
+
+    def __iter__(self):
+        for node in self.processList:
+            yield node.data
+
+    def __str__(self):
+        processes = []
+        for process in self:
+            processes.append(f"{process.processName}({process.processTime})")
+        return "Scheduler Processes: " + " -> ".join(processes)
+
 
 
 
