@@ -230,6 +230,10 @@ class TestScheduler(unittest.TestCase):
         process1 = Process("Process1", 10)
         scheduler.add_process(process1)
         self.assertEqual(scheduler.get_current(), process1)
+
+    def test_retrieve_current_process_empty_list(self):
+        scheduler = Scheduler()
+        self.assertIsNone(scheduler.get_current())
         
     def test_iterate_through_processes(self):
         scheduler = Scheduler()
@@ -259,4 +263,3 @@ class TestScheduler(unittest.TestCase):
         self.assertIn("Process2", schedulerStr)
         self.assertIn("10", schedulerStr)
         self.assertIn("20", schedulerStr)
-
