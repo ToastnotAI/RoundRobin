@@ -128,12 +128,12 @@ class TestScheduler(unittest.TestCase):
         scheduler.add_process(process2)
         scheduler.add_process(process3)
 
-        found_node = scheduler.processList.find("Process2")
-        self.assertIsNotNone(found_node)
-        self.assertEqual(found_node.data, process2)
+        foundNode = scheduler.processList.find("Process2")
+        self.assertIsNotNone(foundNode)
+        self.assertEqual(foundNode.data, process2)
 
-        not_found_node = scheduler.processList.find("NonExistentProcess")
-        self.assertIsNone(not_found_node)
+        notFoundNode = scheduler.processList.find("NonExistentProcess")
+        self.assertIsNone(notFoundNode)
 
     def test_kill_process_in_list(self):
         scheduler = Scheduler()

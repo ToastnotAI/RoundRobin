@@ -11,7 +11,7 @@ class Scheduler:
         # overwrite find to search by processName
         def find_by_name(targetName):
             currentNode = self.processList.head
-            for _ in range(self.processList.size):
+            for i in range(self.processList.size):
                 if currentNode.data.processName == targetName:
                     return currentNode
                 currentNode = currentNode.next

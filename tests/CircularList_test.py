@@ -183,8 +183,8 @@ class TestCircularList(unittest.TestCase):
 
     def test_iterate_through_list(self):
         cList = CircularList()
-        nodes_data = ["first", "second", "third", "fourth"]
-        nodes = [Node(data) for data in nodes_data]
+        nodesData = ["first", "second", "third", "fourth"]
+        nodes = [Node(data) for data in nodesData]
         for node in nodes:
             cList.add(node)
         
@@ -192,7 +192,7 @@ class TestCircularList(unittest.TestCase):
             expected = nodes.pop(0)
             self.assertEqual(yieldedNode, expected)
         
-        
+
 
     
 
