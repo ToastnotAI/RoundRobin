@@ -148,7 +148,8 @@ class TestScheduler(unittest.TestCase):
 
         self.assertEqual(scheduler.processList.size, 3)
 
-        scheduler.kill("Process2")
+        killSuccess = scheduler.kill("Process2")
+        self.assertTrue(killSuccess)
         self.assertEqual(scheduler.processList.size, 2)
         self.assertEqual(scheduler.processList.head.data, process1)
         self.assertEqual(scheduler.processList.head.next.data, process3)
@@ -168,11 +169,47 @@ class TestScheduler(unittest.TestCase):
 
         self.assertEqual(scheduler.currentNode.data, process1)
 
-        scheduler.kill("Process1")
+        killSuccess = scheduler.kill("Process1")
+        self.assertTrue(killSuccess)
         self.assertEqual(scheduler.processList.size, 1)
         self.assertEqual(scheduler.processList.head.data, process2)
         self.assertEqual(scheduler.currentNode.data, process2)
         scheduler.step()
         self.assertEqual(scheduler.currentNode.data, process2)
         self.assertEqual(process1.processTime, 10)  # Ensure process1 was not modified
+
+    def test_kill_last_process(self):
+        scheduler = Scheduler()
+        scheduler._timeSlice = 3
+        process1 = Process("Process1", 10)
+
+        scheduler.add_process(process1)
+
+        self.assertEqual(scheduler.currentNode.data, process1)
+
+        killSuccess = scheduler.kill("Process1")
+        self.assertTrue(killSuccess)
+        self.assertEqual(scheduler.processList.size, 0)
+        self.assertIsNone(scheduler.processList.head)
+        self.assertIsNone(scheduler.currentNode)
+        self.assertEqual(process1.processTime, 10)  # Ensure process1 was not modified
+
+    def test_kill_non_existent_process(self):
+        scheduler = Scheduler()
+        scheduler._timeSlice = 3
+        process1 = Process("Process1", 10)
+        scheduler.add_process(process1)
+
+        self.assertEqual(scheduler.processList.size, 1)
+
+        try:
+            killSuccess = scheduler.kill("NonExistentProcess")  # Should not raise an error
+            self.assertFalse(killSuccess)
+        except Exception as e:
+            self.fail(f"Scheduler.kill() raised an exception for non-existent process: {e}")
+
+        self.assertEqual(scheduler.processList.size, 1)
+        self.assertEqual(scheduler.processList.head.data, process1)
+        self.assertEqual(scheduler.currentNode.data, process1)
+    
     

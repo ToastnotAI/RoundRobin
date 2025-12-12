@@ -42,12 +42,19 @@ class Scheduler:
         
     def kill(self, processName):
         processToKillNode = self.processList.find(processName)
+        if processToKillNode is None:
+            return False
         processToKill = processToKillNode.data
-        
+
+
         if processToKillNode == self.currentNode:
-            self.currentNode = self.currentNode.next   
+            if self.processList.size == 1:
+                self.currentNode = None
+            else:
+                self.currentNode = self.currentNode.next   
 
         self.processList.delete(processToKillNode)
+        return True
 
 
 
