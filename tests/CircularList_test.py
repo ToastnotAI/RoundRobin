@@ -1,7 +1,76 @@
-#from CircularList import CircularList
+from CircularList import Node, CircularList
 import unittest
 
 class TestCircularListNode(unittest.TestCase):
     def test_node_exists(self):
         node = Node()
         self.assertIsNotNone(node)
+
+    def test_node_type(self):
+        node = Node()
+        self.assertIsInstance(node, Node)
+
+    def test_node_initializes_with_data(self):
+        data = "test_data"
+        node = Node(data)
+        self.assertEqual(node.data, data)
+    
+    def test_node_has_next_and_prev_attributes(self):
+        node = Node()
+        self.assertTrue(hasattr(node, 'next'))
+        self.assertTrue(hasattr(node, 'prev'))
+
+class TestCircularList(unittest.TestCase):
+    def test_CircularList_class_exists(self):
+        cList = CircularList()
+        self.assertIsNotNone(cList)
+    
+    def test_CircularList_type(self):
+        cList = CircularList()
+        self.assertIsInstance(cList, CircularList)
+
+    def test_CircularList_has_attributes(self):
+        cList = CircularList()
+        self.assertTrue(hasattr(cList, 'head'))
+        self.assertTrue(hasattr(cList, 'size'))
+    
+    def test_CircularList_initial_size(self):
+        cList = CircularList()
+        self.assertEqual(cList.size, 0)
+    
+    def test_CircularList_head_initially_none(self):
+        cList = CircularList()
+        self.assertIsNone(cList.head)
+
+    def test_assign_first_node_as_head(self):
+        cList = CircularList()
+        node = Node("first")
+        cList.add(node)
+        self.assertEqual(cList.head, node)
+        self.assertEqual(cList.size, 1)
+        self.assertEqual(cList.head.next, node)
+        self.assertEqual(cList.head.prev, node)
+    
+    def test_add_multiple_nodes(self):
+        cList = CircularList()
+        first_node = Node("first")
+        second_node = Node("second")
+        third_node = Node("third")
+
+        cList.add(first_node)
+        cList.add(second_node)
+        cList.add(third_node)
+
+        self.assertEqual(cList.size, 3)
+
+        self.assertEqual(cList.head, first_node)
+        self.assertEqual(cList.head.next, second_node)
+        self.assertEqual(cList.head.prev, third_node)
+
+        self.assertEqual(second_node.next, third_node)
+        self.assertEqual(second_node.prev, first_node)
+
+        self.assertEqual(third_node.next, first_node)
+        self.assertEqual(third_node.prev, second_node)
+
+        
