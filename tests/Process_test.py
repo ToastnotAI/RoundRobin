@@ -24,7 +24,10 @@ class TestProcess(unittest.TestCase):
 
     def test_strict_types_for_Process(self):
         with self.assertRaises(TypeError):
-            process = Process(123, "NotAnInt")  # Invalid types
+            process = Process(123, 23)  # Invalid name type
+
+        with self.assertRaises(TypeError):
+            process = Process("validName", "NotAnInt")  # Invalid time type
         
         #check valid case does not raise type error
         try:

@@ -99,5 +99,80 @@ class TestScheduler(unittest.TestCase):
         self.assertIsNone(scheduler.currentNode)
         try:
             scheduler.step()  # Should not raise an error
+
         except Exception as e:
             self.fail(f"Scheduler.step() raised an exception on empty list: {e}")
+
+    def test_Scheduler_step_with_single_process_to_completion(self):
+        scheduler = Scheduler()
+        scheduler._timeSlice = 3
+        process1 = Process("Process1", 5)
+        scheduler.add_process(process1)
+        self.assertEqual(scheduler.currentNode.data, process1)
+        scheduler.step()
+        self.assertEqual(scheduler.processList.head.data.processTime, 2)
+        self.assertEqual(scheduler.currentNode.data, process1)
+        scheduler.step()
+        self.assertIsNone(scheduler.processList.head)
+        self.assertEqual(scheduler.processList.size, 0)
+        self.assertIsNone(scheduler.currentNode)
+        self.assertLessEqual(process1.processTime, 0)
+
+    def test_find_process(self):
+        scheduler = Scheduler()
+        process1 = Process("Process1", 10)
+        process2 = Process("Process2", 15)
+        process3 = Process("Process3", 20)
+
+        scheduler.add_process(process1)
+        scheduler.add_process(process2)
+        scheduler.add_process(process3)
+
+        found_node = scheduler.processList.find("Process2")
+        self.assertIsNotNone(found_node)
+        self.assertEqual(found_node.data, process2)
+
+        not_found_node = scheduler.processList.find("NonExistentProcess")
+        self.assertIsNone(not_found_node)
+
+    def test_kill_process_in_list(self):
+        scheduler = Scheduler()
+        scheduler._timeSlice = 3
+        process1 = Process("Process1", 10)
+        process2 = Process("Process2", 10)
+        process3 = Process("Process3", 10)
+
+        scheduler.add_process(process1)
+        scheduler.add_process(process2)
+        scheduler.add_process(process3)
+
+        self.assertEqual(scheduler.processList.size, 3)
+
+        scheduler.kill("Process2")
+        self.assertEqual(scheduler.processList.size, 2)
+        self.assertEqual(scheduler.processList.head.data, process1)
+        self.assertEqual(scheduler.processList.head.next.data, process3)
+        self.assertEqual(scheduler.currentNode.data, process1)
+        scheduler.step()
+        self.assertEqual(scheduler.currentNode.data, process3)
+        self.assertEqual(process2.processTime, 10)  # Ensure process2 was not modified
+
+    def test_kill_current_process(self):
+        scheduler = Scheduler()
+        scheduler._timeSlice = 3
+        process1 = Process("Process1", 10)
+        process2 = Process("Process2", 10)
+
+        scheduler.add_process(process1)
+        scheduler.add_process(process2)
+
+        self.assertEqual(scheduler.currentNode.data, process1)
+
+        scheduler.kill("Process1")
+        self.assertEqual(scheduler.processList.size, 1)
+        self.assertEqual(scheduler.processList.head.data, process2)
+        self.assertEqual(scheduler.currentNode.data, process2)
+        scheduler.step()
+        self.assertEqual(scheduler.currentNode.data, process2)
+        self.assertEqual(process1.processTime, 10)  # Ensure process1 was not modified
+    

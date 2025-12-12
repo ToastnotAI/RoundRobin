@@ -156,6 +156,31 @@ class TestCircularList(unittest.TestCase):
         with self.assertRaises(ValueError):
             cList.delete(absent_node)
 
+    def test_find_node_by_data(self):
+        cList = CircularList()
+        first_node = Node("first")
+        second_node = Node("second")
+        third_node = Node("third")
+
+        cList.add(first_node)
+        cList.add(second_node)
+        cList.add(third_node)
+
+        found_node = cList.find("second")
+        self.assertIsNotNone(found_node)
+        self.assertEqual(found_node, second_node)
+
+    def test_find_node_not_in_list(self):
+        cList = CircularList()
+        first_node = Node("first")
+        second_node = Node("second")
+
+        cList.add(first_node)
+        cList.add(second_node)
+
+        found_node = cList.find("absent")
+        self.assertIsNone(found_node)
+
     
 
         

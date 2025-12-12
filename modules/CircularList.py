@@ -43,4 +43,15 @@ class CircularList:
         node.next = None
         node.prev = None
 
+    def find(self, targetNodeData):
+        currentNode = self.head
+        for node in range(self.size):
+            if currentNode.data == targetNodeData:
+                return currentNode
+
+            currentNode = currentNode.next
+            
+        return None
+
+
         

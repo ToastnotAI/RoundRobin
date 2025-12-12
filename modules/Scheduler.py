@@ -8,6 +8,16 @@ class Scheduler:
     def __init__(self):
         self.processList = CircularList()
 
+        # overwrite find to search by processName
+        def find_by_name(targetName):
+            currentNode = self.processList.head
+            for _ in range(self.processList.size):
+                if currentNode.data.processName == targetName:
+                    return currentNode
+                currentNode = currentNode.next
+            return None
+        self.processList.find = find_by_name
+
     def add_process(self, process):
         self.processList.add(Node(process))
         if self.currentNode is None:
@@ -16,7 +26,9 @@ class Scheduler:
     def step(self):
         if self.currentNode is None:
             return
+
         self.currentNode.data.processTime -= self._timeSlice
+
         if self.currentNode.data.processTime <= 0:
             nodeToDelete = self.currentNode
             self.currentNode = self.currentNode.next
@@ -27,4 +39,16 @@ class Scheduler:
 
         else:
             self.currentNode = self.currentNode.next
+        
+    def kill(self, processName):
+        processToKillNode = self.processList.find(processName)
+        processToKill = processToKillNode.data
+        
+        if processToKillNode == self.currentNode:
+            self.currentNode = self.currentNode.next   
+
+        self.processList.delete(processToKillNode)
+
+
+
 
