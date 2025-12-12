@@ -73,6 +73,90 @@ class TestCircularList(unittest.TestCase):
         self.assertEqual(third_node.next, first_node)
         self.assertEqual(third_node.prev, second_node)
 
+    def test_delete_node(self):
+        cList = CircularList()
+        first_node = Node("first")
+        second_node = Node("second")
+        third_node = Node("third")
+
+        cList.add(first_node)
+        cList.add(second_node)
+        cList.add(third_node)
+
+        # Deleting second node
+        cList.delete(second_node)
+        self.assertEqual(cList.size, 2)
+
+        self.assertEqual(cList.head, first_node)
+        self.assertEqual(cList.head.next, third_node)
+        self.assertEqual(cList.head.prev, third_node)
+
+        self.assertEqual(third_node.next, first_node)
+        self.assertEqual(third_node.prev, first_node)
+
+    def test_delete_head_node(self):
+        cList = CircularList()
+        first_node = Node("first")
+        second_node = Node("second")
+        third_node = Node("third")
+
+        cList.add(first_node)
+        cList.add(second_node)
+        cList.add(third_node)
+
+        cList.delete(first_node)
+        self.assertEqual(cList.size, 2)
+        self.assertEqual(cList.head, second_node)
+        self.assertEqual(cList.head.next, third_node)
+        self.assertEqual(cList.head.prev, third_node)
+
+    def test_delete_tail(self):
+        cList = CircularList()
+        first_node = Node("first")
+        second_node = Node("second")
+        third_node = Node("third")
+
+        cList.add(first_node)
+        cList.add(second_node)
+        cList.add(third_node)
+
+        cList.delete(third_node)
+        self.assertEqual(cList.size, 2)
+        self.assertEqual(cList.head, first_node)
+        self.assertEqual(cList.head.next, second_node)
+        self.assertEqual(cList.head.prev, second_node)
+
+    def test_delete_last_node_in_list(self):
+        cList = CircularList()
+        only_node = Node("only")
+        cList.add(only_node)
+
+        cList.delete(only_node)
+        self.assertEqual(cList.size, 0)
+        self.assertIsNone(cList.head)
+
+    def test_error_when_trying_to_delete_when_node_not_in_list(self):
+        cList = CircularList()
+        first_node = Node("first")
+        second_node = Node("second")
+        absent_node = Node("absent")
+        cList.add(first_node)
+        cList.add(second_node)
+
+        with self.assertRaises(ValueError):
+            cList.delete(absent_node)
+
+    def test_error_when_deleting_node_from_empty_list(self):
+        cList = CircularList()
+        absent_node = Node("absent")
+
+        with self.assertRaises(ValueError):
+            cList.delete(absent_node)
+
+
+        
+
+
     
 
     

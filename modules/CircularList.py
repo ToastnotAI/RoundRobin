@@ -22,3 +22,17 @@ class CircularList:
             node.next = self.head
             self.head.prev.next = node
             self.head.prev = node
+
+    def delete(self, node):
+        if node.next is None or node.prev is None:
+            raise(ValueError(f"Node {node.data} not in list"))
+        self.size -= 1
+        node.next.prev = node.prev
+        node.prev.next = node.next
+        if node == self.head:
+            if self.size == 0:
+                self.head = None
+            else:
+                self.head = node.next
+
+        

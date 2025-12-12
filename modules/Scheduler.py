@@ -1,13 +1,18 @@
 from modules.CircularList import CircularList, Node
 from modules.Process import Process
 class Scheduler:
-    current_process = None
-    _time_slice = 3
+    currentNode = None
+    _timeSlice = 3
 
 
     def __init__(self):
-        self.process_list = CircularList()
+        self.processList = CircularList()
 
     def add_process(self, process):
-        self.process_list.add(Node(process))
-        self.current_process = self.process_list.head.data
+        self.processList.add(Node(process))
+        if self.currentNode is None:
+            self.currentNode = self.processList.head
+
+    def step(self):
+        self.currentNode.data.processTime -= self._timeSlice
+        self.currentNode = self.currentNode.next
