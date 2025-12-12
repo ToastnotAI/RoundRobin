@@ -94,6 +94,9 @@ class TestCircularList(unittest.TestCase):
         self.assertEqual(third_node.next, first_node)
         self.assertEqual(third_node.prev, first_node)
 
+        self.assertIsNone(second_node.next)
+        self.assertIsNone(second_node.prev)
+
     def test_delete_head_node(self):
         cList = CircularList()
         first_node = Node("first")
@@ -153,6 +156,7 @@ class TestCircularList(unittest.TestCase):
         with self.assertRaises(ValueError):
             cList.delete(absent_node)
 
+    
 
         
 

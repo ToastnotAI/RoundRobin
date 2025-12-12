@@ -89,9 +89,15 @@ class TestScheduler(unittest.TestCase):
         self.assertEqual(scheduler.processList.head.data.processTime, 2)
         self.assertEqual(scheduler.currentNode.data, process2)
         scheduler.step()
-        
-        self.assertNotEqual(scheduler.processList.head.data, process2)
+
+        self.assertIsNone(scheduler.processList.head)
         self.assertEqual(scheduler.processList.size, 0)
+        self.assertIsNone(scheduler.currentNode)
 
-
-
+    def test_Scheduler_step_on_empty_list(self):
+        scheduler = Scheduler()
+        self.assertIsNone(scheduler.currentNode)
+        try:
+            scheduler.step()  # Should not raise an error
+        except Exception as e:
+            self.fail(f"Scheduler.step() raised an exception on empty list: {e}")

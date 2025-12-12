@@ -14,5 +14,17 @@ class Scheduler:
             self.currentNode = self.processList.head
 
     def step(self):
+        if self.currentNode is None:
+            return
         self.currentNode.data.processTime -= self._timeSlice
-        self.currentNode = self.currentNode.next
+        if self.currentNode.data.processTime <= 0:
+            nodeToDelete = self.currentNode
+            self.currentNode = self.currentNode.next
+            self.processList.delete(nodeToDelete)
+
+            if self.processList.size == 0:
+                self.currentNode = None
+
+        else:
+            self.currentNode = self.currentNode.next
+
