@@ -7,6 +7,7 @@ class Process:
             raise TypeError("processName must be a string")
         if not isinstance(time, int):
             raise TypeError("processTime must be an integer")
+
         
         self.processName = name
         self.processTime = time

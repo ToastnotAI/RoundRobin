@@ -158,7 +158,7 @@ class TestScheduler(unittest.TestCase):
         self.assertEqual(scheduler.currentNode.data, process3)
         self.assertEqual(process2.processTime, 10)  # Ensure process2 was not modified
 
-    def test_kill_current_process(self):
+    def test_kill_current_process_by_key(self):
         scheduler = Scheduler()
         scheduler._timeSlice = 3
         process1 = Process("Process1", 10)
@@ -170,6 +170,26 @@ class TestScheduler(unittest.TestCase):
         self.assertEqual(scheduler.currentNode.data, process1)
 
         killSuccess = scheduler.kill("Process1")
+        self.assertTrue(killSuccess)
+        self.assertEqual(scheduler.processList.size, 1)
+        self.assertEqual(scheduler.processList.head.data, process2)
+        self.assertEqual(scheduler.currentNode.data, process2)
+        scheduler.step()
+        self.assertEqual(scheduler.currentNode.data, process2)
+        self.assertEqual(process1.processTime, 10)  # Ensure process1 was not modified
+
+    def test_kill_current_process_by_command(self):
+        scheduler = Scheduler()
+        scheduler._timeSlice = 3
+        process1 = Process("Process1", 10)
+        process2 = Process("Process2", 10)
+
+        scheduler.add_process(process1)
+        scheduler.add_process(process2)
+
+        self.assertEqual(scheduler.currentNode.data, process1)
+
+        killSuccess = scheduler.kill_current()
         self.assertTrue(killSuccess)
         self.assertEqual(scheduler.processList.size, 1)
         self.assertEqual(scheduler.processList.head.data, process2)

@@ -60,6 +60,9 @@ class Scheduler:
         if self.currentNode is None:
             return None
         return self.currentNode.data
+    
+    def kill_current(self):
+        return self.kill(self.currentNode.data.processName)
 
     def __iter__(self):
         for node in self.processList:

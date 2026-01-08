@@ -5,7 +5,7 @@ processes = [
     Process("Process1", 10),
     Process("Process2", 15),
     Process("Process3", 20),
-    Process("Process4", 5),
+    Process("Process4", 3),
     Process("Process5", 8)]
 
 scheduler = Scheduler()
@@ -14,6 +14,10 @@ for process in processes:
 
 lastLength = scheduler.processList.size 
 while scheduler.get_current() is not None:
+    x = input("Press Enter to step through the scheduler, or type 'kill to kill the current process: ")
+    if x.lower() == 'kill':
+        killed_process = scheduler.kill_current()
+        print(f"Killed Process: {killed_process}")
     if scheduler.processList.size != lastLength:
         print(f"\nProcess Complete. {str(scheduler)}\n")
         lastLength = scheduler.processList.size
