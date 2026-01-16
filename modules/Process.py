@@ -1,14 +1,13 @@
-class Process:
+from modules.CircularList import Node
+class Process(Node):
     """A class to represent a process.
     Attributes:
-        processName: The name of the process.
-        processTime: The time required for the process to complete.
+        self.data: A list containing the process name and process time.
+            data[0]: The name of the process.
+            data[1]: The time required for the process to complete.
     """
-
-    processName = None
-    processTime = None
-
-
+    
+    data = [None, None]  # [processName, processTime]
     def __init__(self, name, time):
         """Initializes a Process with the given name and time.
         Args:
@@ -22,16 +21,16 @@ class Process:
         if not isinstance(time, int):
             raise TypeError("processTime must be an integer")
 
-        self.processName = name
-        self.processTime = time
+
+        self.data = [name, time]
 
 
     def __repr__(self):
         """Returns a string representation of the Process."""
-        return f"Process(name={self.processName}, time={self.processTime})"
-        
+        return f"Process(name={self.data[0]}, time={self.data[1]})"
+
 
     def __str__(self):
         """Returns a user-friendly string representation of the Process."""
-        return f"Process {self.processName} with {self.processTime} time units remaining"
+        return f"Process {self.data[0]} with {self.data[1]} time units remaining"
         

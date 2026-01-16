@@ -12,7 +12,7 @@ scheduler = Scheduler()
 for process in processes:
     scheduler.add_process(process)
 
-lastLength = scheduler.processList.size 
+lastLength = scheduler.size 
 while scheduler.get_current() is not None:
     currentProcess = scheduler.get_current()
     print(f"Current Process: {currentProcess}")
@@ -20,9 +20,9 @@ while scheduler.get_current() is not None:
     if x.lower() == 'kill':
         killed_process = scheduler.kill_current()
         print(f"Killed Process: {killed_process}")
-    if scheduler.processList.size != lastLength:
+    if scheduler.size != lastLength:
         print(f"\nProcess Complete. {str(scheduler)}\n")
-        lastLength = scheduler.processList.size
+        lastLength = scheduler.size
     
 
     scheduler.step()

@@ -12,9 +12,8 @@ class TestProcess(unittest.TestCase):
 
     def test_Process_attributes(self):
         process = Process("TestProcess", 10)
-        self.assertTrue(hasattr(process, "processTime"))
-        self.assertTrue(hasattr(process, "processName"))
-    
+        self.assertTrue(hasattr(process, 'data'))
+        self.assertIsInstance(process.data, list)
     def test_Process_must_have_name_and_time(self):
         with self.assertRaises(TypeError):
             process = Process()  # Missing arguments
@@ -39,8 +38,8 @@ class TestProcess(unittest.TestCase):
         name = "TestProcess"
         time = 10
         process = Process(name, time)
-        self.assertEqual(process.processName, name)
-        self.assertEqual(process.processTime, time)
+        self.assertEqual(process.data[0], name)
+        self.assertEqual(process.data[1], time)
     
     def test_get_process_repr(self):
         name = "TestProcess"

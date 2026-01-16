@@ -1,21 +1,27 @@
 import unittest
 from modules.Scheduler import Scheduler
 from modules.Process import Process
+from modules.CircularList import CircularList
 
 class TestScheduler(unittest.TestCase):
     def test_Scheduler_class_exists(self):
         scheduler = Scheduler()
         self.assertIsNotNone(scheduler)
 
-    def test_Scheduler_type(self):
+    def test_Scheduler_type_and_inheritance(self):
         scheduler = Scheduler()
         self.assertIsInstance(scheduler, Scheduler)
+        self.assertIsInstance(scheduler, CircularList)
+
+    """ ProcessList is outdated, use self instead since Scheduler now inherits from CircularList 
 
     def test_Scheduler_has_processList(self):
         scheduler = Scheduler()
         self.assertTrue(hasattr(scheduler, 'processList'))
-        self.assertIsNotNone(scheduler.processList)
-        self.assertEqual(type(scheduler.processList).__name__, 'CircularList')
+        self.assertIsNotNone(scheduler.)
+        self.assertEqual(type(scheduler.).__name__, 'CircularList')
+    """
+
     def test_Scheduler_attributes(self):
         scheduler = Scheduler()
         self.assertTrue(hasattr(scheduler, 'currentNode'))
@@ -25,15 +31,15 @@ class TestScheduler(unittest.TestCase):
 
     def test_Scheduler_process_list_initially_empty(self):
         scheduler = Scheduler()
-        self.assertEqual(scheduler.processList.size, 0)
+        self.assertEqual(scheduler.size, 0)
 
     def test_Scheduler_add_test_process(self):
         scheduler = Scheduler()
         testProcess = Process("TestProcess", 10)
         scheduler.add_process(testProcess)
-        self.assertEqual(scheduler.processList.size, 1)
-        self.assertEqual(scheduler.processList.head.data, testProcess)
-        self.assertEqual(scheduler.currentNode.data, testProcess)
+        self.assertEqual(scheduler.size, 1)
+        self.assertEqual(scheduler.head, testProcess)
+        self.assertEqual(scheduler.currentNode, testProcess)
 
     # This test was AI generated using inline suggestion based on the function definition
     def test_Scheduler_add_multiple_processes(self):
@@ -46,11 +52,11 @@ class TestScheduler(unittest.TestCase):
         scheduler.add_process(process2)
         scheduler.add_process(process3)
 
-        self.assertEqual(scheduler.processList.size, 3)
-        self.assertEqual(scheduler.processList.head.data, process1)
-        self.assertEqual(scheduler.processList.head.next.data, process2)
-        self.assertEqual(scheduler.processList.head.next.next.data, process3)
-        self.assertEqual(scheduler.currentNode.data, process1)
+        self.assertEqual(scheduler.size, 3)
+        self.assertEqual(scheduler.head, process1)
+        self.assertEqual(scheduler.head.next, process2)
+        self.assertEqual(scheduler.head.next.next, process3)
+        self.assertEqual(scheduler.currentNode, process1)
     
     def test_scheduler_stepping_forward_in_time(self):
         scheduler = Scheduler()
@@ -61,13 +67,13 @@ class TestScheduler(unittest.TestCase):
         scheduler.add_process(process1)
         scheduler.add_process(process2)
 
-        self.assertEqual(scheduler.currentNode.data, process1)
+        self.assertEqual(scheduler.currentNode, process1)
         scheduler.step()
-        self.assertEqual(scheduler.processList.head.data.processTime, 7)
-        self.assertEqual(scheduler.currentNode.data, process2)
+        self.assertEqual(scheduler.head.data[1], 7)
+        self.assertEqual(scheduler.currentNode, process2)
         scheduler.step()
-        self.assertEqual(scheduler.currentNode.data, process1)
-        self.assertEqual(scheduler.processList.head.next.data.processTime, 7)
+        self.assertEqual(scheduler.currentNode, process1)
+        self.assertEqual(scheduler.head.next.data[1], 7)
 
     def test_Scheduler_step_completing_process(self):
         scheduler = Scheduler()
@@ -77,21 +83,21 @@ class TestScheduler(unittest.TestCase):
         scheduler.add_process(process1)
         scheduler.add_process(process2)
 
-        self.assertEqual(scheduler.currentNode.data, process1)
+        self.assertEqual(scheduler.currentNode, process1)
         scheduler.step()
 
-        self.assertNotEqual(scheduler.processList.head.data, process1)
-        self.assertNotEqual(scheduler.processList.size, 2)
-        self.assertEqual(scheduler.currentNode.data, process2)
-        self.assertEqual(scheduler.processList.head.data.processTime, 5)
+        self.assertNotEqual(scheduler.head.data, process1)
+        self.assertNotEqual(scheduler.size, 2)
+        self.assertEqual(scheduler.currentNode, process2)
+        self.assertEqual(scheduler.head.data[1], 5)
         scheduler.step()
 
-        self.assertEqual(scheduler.processList.head.data.processTime, 2)
-        self.assertEqual(scheduler.currentNode.data, process2)
+        self.assertEqual(scheduler.head.data[1], 2)
+        self.assertEqual(scheduler.currentNode, process2)
         scheduler.step()
 
-        self.assertIsNone(scheduler.processList.head)
-        self.assertEqual(scheduler.processList.size, 0)
+        self.assertIsNone(scheduler.head)
+        self.assertEqual(scheduler.size, 0)
         self.assertIsNone(scheduler.currentNode)
 
     def test_Scheduler_step_on_empty_list(self):
@@ -108,17 +114,17 @@ class TestScheduler(unittest.TestCase):
         scheduler._timeSlice = 3
         process1 = Process("Process1", 5)
         scheduler.add_process(process1)
-        self.assertEqual(scheduler.currentNode.data, process1)
+        self.assertEqual(scheduler.currentNode, process1)
         scheduler.step()
-        self.assertEqual(scheduler.processList.head.data.processTime, 2)
-        self.assertEqual(scheduler.currentNode.data, process1)
+        self.assertEqual(scheduler.head.data[1], 2)
+        self.assertEqual(scheduler.currentNode, process1)
         scheduler.step()
-        self.assertIsNone(scheduler.processList.head)
-        self.assertEqual(scheduler.processList.size, 0)
+        self.assertIsNone(scheduler.head)
+        self.assertEqual(scheduler.size, 0)
         self.assertIsNone(scheduler.currentNode)
-        self.assertLessEqual(process1.processTime, 0)
+        self.assertLessEqual(process1.data[1], 0)
 
-    def test_find_process(self):
+    def test_find(self):
         scheduler = Scheduler()
         process1 = Process("Process1", 10)
         process2 = Process("Process2", 15)
@@ -128,11 +134,11 @@ class TestScheduler(unittest.TestCase):
         scheduler.add_process(process2)
         scheduler.add_process(process3)
 
-        foundNode = scheduler.processList.find("Process2")
+        foundNode = scheduler.find("Process2")
         self.assertIsNotNone(foundNode)
-        self.assertEqual(foundNode.data, process2)
+        self.assertEqual(foundNode, process2)
 
-        notFoundNode = scheduler.processList.find("NonExistentProcess")
+        notFoundNode = scheduler.find("NonExistentProcess")
         self.assertIsNone(notFoundNode)
 
     def test_kill_process_in_list(self):
@@ -146,17 +152,17 @@ class TestScheduler(unittest.TestCase):
         scheduler.add_process(process2)
         scheduler.add_process(process3)
 
-        self.assertEqual(scheduler.processList.size, 3)
+        self.assertEqual(scheduler.size, 3)
 
         killSuccess = scheduler.kill("Process2")
         self.assertTrue(killSuccess)
-        self.assertEqual(scheduler.processList.size, 2)
-        self.assertEqual(scheduler.processList.head.data, process1)
-        self.assertEqual(scheduler.processList.head.next.data, process3)
-        self.assertEqual(scheduler.currentNode.data, process1)
+        self.assertEqual(scheduler.size, 2)
+        self.assertEqual(scheduler.head, process1)
+        self.assertEqual(scheduler.head.next, process3)
+        self.assertEqual(scheduler.currentNode, process1)
         scheduler.step()
-        self.assertEqual(scheduler.currentNode.data, process3)
-        self.assertEqual(process2.processTime, 10)  # Ensure process2 was not modified
+        self.assertEqual(scheduler.currentNode, process3)
+        self.assertEqual(process2.data[1], 10)  # Ensure process2 was not modified
 
     def test_kill_current_process_by_key(self):
         scheduler = Scheduler()
@@ -167,16 +173,16 @@ class TestScheduler(unittest.TestCase):
         scheduler.add_process(process1)
         scheduler.add_process(process2)
 
-        self.assertEqual(scheduler.currentNode.data, process1)
+        self.assertEqual(scheduler.currentNode, process1)
 
         killSuccess = scheduler.kill("Process1")
         self.assertTrue(killSuccess)
-        self.assertEqual(scheduler.processList.size, 1)
-        self.assertEqual(scheduler.processList.head.data, process2)
-        self.assertEqual(scheduler.currentNode.data, process2)
+        self.assertEqual(scheduler.size, 1)
+        self.assertEqual(scheduler.head, process2)
+        self.assertEqual(scheduler.currentNode, process2)
         scheduler.step()
-        self.assertEqual(scheduler.currentNode.data, process2)
-        self.assertEqual(process1.processTime, 10)  # Ensure process1 was not modified
+        self.assertEqual(scheduler.currentNode, process2)
+        self.assertEqual(process1.data[1], 10)  # Ensure process1 was not modified
 
     def test_kill_current_process_by_command(self):
         scheduler = Scheduler()
@@ -187,16 +193,16 @@ class TestScheduler(unittest.TestCase):
         scheduler.add_process(process1)
         scheduler.add_process(process2)
 
-        self.assertEqual(scheduler.currentNode.data, process1)
+        self.assertEqual(scheduler.currentNode, process1)
 
         killSuccess = scheduler.kill_current()
         self.assertTrue(killSuccess)
-        self.assertEqual(scheduler.processList.size, 1)
-        self.assertEqual(scheduler.processList.head.data, process2)
-        self.assertEqual(scheduler.currentNode.data, process2)
+        self.assertEqual(scheduler.size, 1)
+        self.assertEqual(scheduler.head, process2)
+        self.assertEqual(scheduler.currentNode, process2)
         scheduler.step()
-        self.assertEqual(scheduler.currentNode.data, process2)
-        self.assertEqual(process1.processTime, 10)  # Ensure process1 was not modified
+        self.assertEqual(scheduler.currentNode, process2)
+        self.assertEqual(process1.data[1], 10)  # Ensure process1 was not modified
 
     def test_kill_last_process(self):
         scheduler = Scheduler()
@@ -205,14 +211,14 @@ class TestScheduler(unittest.TestCase):
 
         scheduler.add_process(process1)
 
-        self.assertEqual(scheduler.currentNode.data, process1)
+        self.assertEqual(scheduler.currentNode, process1)
 
         killSuccess = scheduler.kill("Process1")
         self.assertTrue(killSuccess)
-        self.assertEqual(scheduler.processList.size, 0)
-        self.assertIsNone(scheduler.processList.head)
+        self.assertEqual(scheduler.size, 0)
+        self.assertIsNone(scheduler.head)
         self.assertIsNone(scheduler.currentNode)
-        self.assertEqual(process1.processTime, 10)  # Ensure process1 was not modified
+        self.assertEqual(process1.data[1], 10)  # Ensure process1 was not modified
 
     def test_kill_non_existent_process(self):
         scheduler = Scheduler()
@@ -220,7 +226,7 @@ class TestScheduler(unittest.TestCase):
         process1 = Process("Process1", 10)
         scheduler.add_process(process1)
 
-        self.assertEqual(scheduler.processList.size, 1)
+        self.assertEqual(scheduler.size, 1)
 
         try:
             killSuccess = scheduler.kill("NonExistentProcess")  # Should not raise an error
@@ -228,9 +234,9 @@ class TestScheduler(unittest.TestCase):
         except Exception as e:
             self.fail(f"Scheduler.kill() raised an exception for non-existent process: {e}")
 
-        self.assertEqual(scheduler.processList.size, 1)
-        self.assertEqual(scheduler.processList.head.data, process1)
-        self.assertEqual(scheduler.currentNode.data, process1)
+        self.assertEqual(scheduler.size, 1)
+        self.assertEqual(scheduler.head, process1)
+        self.assertEqual(scheduler.currentNode, process1)
     
     def test_kill_process_empty_list(self):
         scheduler = Scheduler()
@@ -243,7 +249,7 @@ class TestScheduler(unittest.TestCase):
             self.fail(f"Scheduler.kill() raised an exception on empty list: {e}")
 
         self.assertIsNone(scheduler.currentNode)
-        self.assertEqual(scheduler.processList.size, 0)
+        self.assertEqual(scheduler.size, 0)
 
     def test_retrieve_current_process(self):
         scheduler = Scheduler()
