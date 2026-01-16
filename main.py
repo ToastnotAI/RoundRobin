@@ -14,6 +14,8 @@ for process in processes:
 
 lastLength = scheduler.processList.size 
 while scheduler.get_current() is not None:
+    currentProcess = scheduler.get_current()
+    print(f"Current Process: {currentProcess}")
     x = input("Press Enter to step through the scheduler, or type 'kill to kill the current process: ")
     if x.lower() == 'kill':
         killed_process = scheduler.kill_current()
@@ -21,8 +23,7 @@ while scheduler.get_current() is not None:
     if scheduler.processList.size != lastLength:
         print(f"\nProcess Complete. {str(scheduler)}\n")
         lastLength = scheduler.processList.size
-    currentProcess = scheduler.get_current()
-    print(f"Current Process: {currentProcess}")
+    
 
     scheduler.step()
 
