@@ -86,7 +86,7 @@ class TestScheduler(unittest.TestCase):
         self.assertEqual(scheduler.currentNode, process1)
         scheduler.step()
 
-        self.assertNotEqual(scheduler.head.data, process1)
+        self.assertNotEqual(scheduler.head, process1)
         self.assertNotEqual(scheduler.size, 2)
         self.assertEqual(scheduler.currentNode, process2)
         self.assertEqual(scheduler.head.data[1], 5)

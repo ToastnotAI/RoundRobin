@@ -37,27 +37,6 @@ class Scheduler(CircularList):
             self.currentNode = self.head
 
 
-    def step(self):
-        """Advances the scheduler by one time slice."""
-        if self.currentNode is None:
-            return
-
-        # Deduct time slice from current process
-        self.currentNode.data[1] -= self._timeSlice
-
-        # If process is complete, remove it from the list
-        if self.currentNode.data[1] <= 0:
-            nodeToDelete = self.currentNode
-            self.currentNode = self.currentNode.next
-            self.delete(nodeToDelete)
-
-            # If all processes are complete, set currentNode to None
-            if self.size == 0:
-                self.currentNode = None
-
-        # Move to the next process
-        else:
-            self.currentNode = self.currentNode.next
 
         
     def kill(self, processName):
@@ -73,8 +52,6 @@ class Scheduler(CircularList):
         if processToKillNode is None:
             return False
 
-        processToKill = processToKillNode # Process object is the data of the circular list node
-
         # If the process to kill is the current process, move currentNode pointer
         if processToKillNode == self.currentNode:
             if self.size == 1:
@@ -86,6 +63,22 @@ class Scheduler(CircularList):
 
         self.delete(processToKillNode)
         return True
+
+
+    def step(self):
+        """Advances the scheduler by one time slice."""
+        if self.currentNode is None:
+            return
+
+        # Deduct time slice from current process
+        self.currentNode.data[1] -= self._timeSlice
+        # Move to the next process
+        self.currentNode = self.currentNode.next
+
+        # If process is complete, remove it from the list
+        if self.currentNode.prev.data[1] <= 0:
+            self.kill(self.currentNode.prev.data[0])
+
 
 
     def get_current(self):
@@ -108,7 +101,3 @@ class Scheduler(CircularList):
         for process in self:
             processes.append(f"{process.data[0]}({process.data[1]})")
         return "Scheduler Processes: " + " -> ".join(processes)
-
-
-
-
